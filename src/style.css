@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand: Phifer Web Solutions - Teal Warmth */
+
+  /* Primary palette */
+  --color-primary: #0e7490;
+  --color-secondary: #0d9488;
+  --color-accent: #f59e0b;
+
+  /* Backgrounds */
+  --color-bg: #ffffff;
+  --color-surface: #f0fdfa;
+  --color-surface-hover: #ccfbf1;
+
+  /* Text */
+  --color-text: #1f2937;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
+
+  /* UI */
+  --color-border: #e2e8f0;
+  --color-border-focus: #0e7490;
+
+  /* Status */
+  --color-success: #14b8a6;
+  --color-warning: #f97316;
+  --color-error: #dc2626;
+
+  /* Buttons */
+  --color-btn-primary: #0d9488;
+  --color-btn-primary-hover: #0b7d73;
+  --color-btn-secondary: #0e7490;
+  --color-btn-secondary-hover: #0c6478;
+  --color-btn-accent: #f59e0b;
+  --color-btn-accent-hover: #d97706;
+}
+
+/* Dark mode overrides (class-based toggle) */
+.dark {
+  --color-primary: #22d3ee;
+  --color-secondary: #2dd4bf;
+  --color-accent: #fbbf24;
+
+  --color-bg: #083344;
+  --color-surface: #164e63;
+  --color-surface-hover: #155e75;
+
+  --color-text: #f3f4f6;
+  --color-text-secondary: #d1d5db;
+  --color-text-muted: #9ca3af;
+
+  --color-border: #0e7490;
+  --color-border-focus: #22d3ee;
+
+  --color-success: #5eead4;
+  --color-warning: #fb923c;
+  --color-error: #f87171;
+
+  --color-btn-primary: #22d3ee;
+  --color-btn-primary-hover: #06b6d4;
+  --color-btn-secondary: #2dd4bf;
+  --color-btn-secondary-hover: #14b8a6;
+  --color-btn-accent: #fbbf24;
+  --color-btn-accent-hover: #f59e0b;
+}
+
+/* Base styles */
+body {
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Custom form element styling for brand consistency */
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: var(--color-secondary);
+}

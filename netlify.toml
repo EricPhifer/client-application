@@ -1,0 +1,25 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 5175
+  port = 8889
+  autoLaunch = false
+
+[functions]
+  node_bundler = "esbuild"
+
+# API route rewrites (must come BEFORE SPA catch-all)
+[[redirects]]
+  from = "/api/prospect"
+  to = "/.netlify/functions/get-prospect"
+  status = 200
+
+[[redirects]]
+  from = "/api/application"
+  to = "/.netlify/functions/submit-application"
+  status = 200
+
+# SPA fallback lives in public/_redirects to avoid interfering with Vite dev server

@@ -1,0 +1,32 @@
+{
+  "name": "application-assessment",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:functions": "netlify functions:serve --port 9999",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@auth0/auth0-vue": "^2.5.0",
+    "@libsql/client": "^0.17.0",
+    "nanoid": "^5.1.6",
+    "resend": "^6.9.2",
+    "vue": "^3.5.25",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^5.1.2",
+    "@tailwindcss/vite": "^4.2.0",
+    "@types/node": "^24.10.1",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "@vue/tsconfig": "^0.8.1",
+    "netlify-cli": "^23.15.1",
+    "tailwindcss": "^4.2.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vue-tsc": "^3.1.5"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "brand": "Phifer Web Solutions - Health Check Tool",
+  "scheme": "Teal Warmth",
+  "light": {
+    "primary": {
+      "primary": "#0e7490",
+      "secondary": "#0d9488",
+      "accent": "#f59e0b"
+    },
+    "backgrounds": {
+      "bg": "#ffffff",
+      "surface": "#f0fdfa",
+      "surfaceHover": "#ccfbf1"
+    },
+    "text": {
+      "primary": "#1f2937",
+      "secondary": "#4b5563",
+      "muted": "#6b7280"
+    },
+    "ui": {
+      "border": "#e2e8f0",
+      "borderFocus": "#0e7490"
+    },
+    "status": {
+      "success": "#14b8a6",
+      "warning": "#f97316",
+      "error": "#dc2626"
+    },
+    "score": {
+      "excellent": "#14b8a6",
+      "good": "#0d9488",
+      "needsImprovement": "#f59e0b",
+      "critical": "#dc2626"
+    },
+    "sections": {
+      "border": "#0e7490",
+      "recommendationBg": "#f0fdfa",
+      "recommendationBorder": "#0d9488"
+    },
+    "buttons": {
+      "primary": "#0d9488",
+      "primaryHover": "#0b7d73",
+      "secondary": "#0e7490",
+      "secondaryHover": "#0c6478",
+      "accent": "#f59e0b",
+      "accentHover": "#d97706"
+    }
+  },
+  "dark": {
+    "primary": {
+      "primary": "#22d3ee",
+      "secondary": "#2dd4bf",
+      "accent": "#fbbf24"
+    },
+    "backgrounds": {
+      "bg": "#083344",
+      "surface": "#164e63",
+      "surfaceHover": "#155e75"
+    },
+    "text": {
+      "primary": "#f3f4f6",
+      "secondary": "#d1d5db",
+      "muted": "#9ca3af"
+    },
+    "ui": {
+      "border": "#0e7490",
+      "borderFocus": "#22d3ee"
+    },
+    "status": {
+      "success": "#5eead4",
+      "warning": "#fb923c",
+      "error": "#f87171"
+    },
+    "score": {
+      "excellent": "#5eead4",
+      "good": "#2dd4bf",
+      "needsImprovement": "#fbbf24",
+      "critical": "#f87171"
+    },
+    "sections": {
+      "border": "#22d3ee",
+      "recommendationBg": "#155e75",
+      "recommendationBorder": "#2dd4bf"
+    },
+    "buttons": {
+      "primary": "#22d3ee",
+      "primaryHover": "#06b6d4",
+      "secondary": "#2dd4bf",
+      "secondaryHover": "#14b8a6",
+      "accent": "#fbbf24",
+      "accentHover": "#f59e0b"
+    }
+  }
+}
