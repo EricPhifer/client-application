@@ -1,14 +1,11 @@
 import type { Handler } from '@netlify/functions';
 import { createClient } from '@libsql/client';
-import { Resend } from 'resend';
 import { nanoid } from 'nanoid';
 
 const turso = createClient({
   url: process.env.TURSO_DATABASE_URL!,
   authToken: process.env.TURSO_AUTH_TOKEN!,
 });
-
-const resend = new Resend(process.env.RESEND_API_KEY!);
 
 interface ApplicationData {
   prospectId?: string;
@@ -127,12 +124,6 @@ export const handler: Handler = async (event) => {
       });
     }
 
-    // Send confirmation email to applicant
-    await sendConfirmationEmail(formData, !!formData.prospectId);
-
-    // Send notification email to admin
-    await sendAdminNotification(applicationId, formData, autoAssessment);
-
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -235,147 +226,4 @@ function performAutoAssessment(formData: ApplicationData): AutoAssessment {
     recommendation,
     score: greenFlags.length - yellowFlags.length - (redFlags.length * 2),
   };
-}
-
-async function sendConfirmationEmail(formData: ApplicationData, hasHealthCheckCredit: boolean) {
-  const creditMessage = hasHealthCheckCredit
-    ? `<p style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 12px; margin: 20px 0;">
-         <strong style="color: #16a34a;">&#10003; Health Check Credit Applied</strong><br>
-         <span style="color: #15803d;">Your $49 health check investment will be credited toward your first project if accepted.</span>
-       </p>`
-    : '';
-
-  await resend.emails.send({
-    from: 'Phifer Web Solutions <hello@ericphifer.tech>',
-    to: formData.email,
-    subject: 'Application Received - Phifer Web Solutions',
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #2563eb; margin-bottom: 20px;">Thank you for your application!</h1>
-
-        <p>Hi ${formData.contactName},</p>
-
-        <p>We've received your application for <strong>${formData.organizationName}</strong> and are excited to learn more about your project.</p>
-
-        ${creditMessage}
-
-        <p>We'll review your application and get back to you within <strong>2 business days</strong> with next steps.</p>
-
-        <p>In the meantime, if you have any questions, feel free to reply to this email.</p>
-
-        <p style="margin-top: 30px;">Best regards,<br>
-        <strong>Eric Phifer</strong><br>
-        Phifer Web Solutions</p>
-
-        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
-
-        <p style="font-size: 14px; color: #6b7280;">
-          Phifer Web Solutions<br>
-          <a href="https://ericphifer.tech" style="color: #2563eb;">ericphifer.tech</a><br>
-          eric@ericphifer.tech
-        </p>
-      </body>
-      </html>
-    `,
-  });
-}
-
-async function sendAdminNotification(
-  applicationId: string,
-  formData: ApplicationData,
-  assessment: AutoAssessment,
-) {
-  const hasCredit = !!formData.prospectId;
-  const creditBadge = hasCredit
-    ? '<span style="background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">$49 CREDIT</span>'
-    : '';
-
-  const assessmentColor =
-    assessment.recommendation === 'ACCEPT_RECOMMENDED' ? '#22c55e' :
-    assessment.recommendation === 'DECLINE_RECOMMENDED' ? '#ef4444' :
-    '#f59e0b';
-
-  const flagsList = (flags: string[], color: string) =>
-    flags.length > 0
-      ? `<ul style="margin: 10px 0; padding-left: 20px;">
-           ${flags.map(flag => `<li style="color: ${color};">${flag}</li>`).join('')}
-         </ul>`
-      : '<p style="color: #9ca3af;">None</p>';
-
-  await resend.emails.send({
-    from: 'Applications <applications@ericphifer.tech>',
-    to: process.env.ADMIN_EMAIL!,
-    subject: `New Application: ${formData.organizationName}`,
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #1f2937;">New Application Received ${creditBadge}</h2>
-
-        <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Contact Information</h3>
-          <p><strong>Organization:</strong> ${formData.organizationName}</p>
-          <p><strong>Contact:</strong> ${formData.contactName} (${formData.contactRole})</p>
-          <p><strong>Email:</strong> <a href="mailto:${formData.email}">${formData.email}</a></p>
-          <p><strong>Phone:</strong> ${formData.phone || 'Not provided'}</p>
-          <p><strong>Website:</strong> ${formData.websiteUrl || 'None'}</p>
-        </div>
-
-        <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Project Details</h3>
-          <p><strong>Organization Type:</strong> ${formData.organizationType}</p>
-          <p><strong>Industry:</strong> ${formData.industry}</p>
-          <p><strong>Situation:</strong> ${formData.situation}</p>
-          <p><strong>Budget:</strong> ${formData.budgetRange}</p>
-          <p><strong>Timeline:</strong> ${formData.timeline}</p>
-          <p><strong>Previous Designer:</strong> ${formData.previousDesigner ? 'Yes' : 'No'}</p>
-        </div>
-
-        <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Mission & Impact</h3>
-          <p><strong>Mission:</strong> ${formData.missionStatement}</p>
-          <p><strong>Community Impact:</strong> ${formData.communityImpact}</p>
-          <p><strong>Impact Categories:</strong> ${formData.impactCategories.join(', ')}</p>
-        </div>
-
-        <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Project Description</h3>
-          <p style="white-space: pre-wrap;">${formData.projectDescription}</p>
-        </div>
-
-        <div style="background: ${assessmentColor}15; border-left: 4px solid ${assessmentColor}; padding: 20px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: ${assessmentColor};">Auto-Assessment: ${assessment.recommendation.replace(/_/g, ' ')}</h3>
-          <p><strong>Score:</strong> ${assessment.score}</p>
-
-          <div style="margin: 15px 0;">
-            <strong style="color: #22c55e;">Green Flags (${assessment.greenFlags.length}):</strong>
-            ${flagsList(assessment.greenFlags, '#22c55e')}
-          </div>
-
-          <div style="margin: 15px 0;">
-            <strong style="color: #f59e0b;">Yellow Flags (${assessment.yellowFlags.length}):</strong>
-            ${flagsList(assessment.yellowFlags, '#f59e0b')}
-          </div>
-
-          <div style="margin: 15px 0;">
-            <strong style="color: #ef4444;">Red Flags (${assessment.redFlags.length}):</strong>
-            ${flagsList(assessment.redFlags, '#ef4444')}
-          </div>
-        </div>
-
-        <div style="margin-top: 20px;">
-          <p><strong>Application ID:</strong> ${applicationId}</p>
-          ${hasCredit ? '<p><strong>Health Check Credit:</strong> $49 to be applied to first project</p>' : ''}
-          ${formData.referralSource ? `<p><strong>Referral Source:</strong> ${formData.referralSource}${formData.referralDetail ? ` - ${formData.referralDetail}` : ''}</p>` : ''}
-        </div>
-      </body>
-      </html>
-    `,
-  });
 }

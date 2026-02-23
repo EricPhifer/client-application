@@ -24,13 +24,6 @@ const router = createRouter({
         title: 'Thank You - Phifer Web Solutions',
       },
     },
-    // Phase 2: Admin dashboard routes (protected by Auth0)
-    // {
-    //   path: '/admin',
-    //   name: 'AdminDashboard',
-    //   component: () => import('@/views/admin/Dashboard.vue'),
-    //   meta: { requiresAuth: true },
-    // },
   ],
 });
 
@@ -40,16 +33,5 @@ router.afterEach((to) => {
     document.title = to.meta.title as string;
   }
 });
-
-// Phase 2: Auth guard for admin routes
-// router.beforeEach(async (to) => {
-//   if (to.meta.requiresAuth) {
-//     const { isAuthenticated, loginWithRedirect } = useAuth0();
-//     if (!isAuthenticated.value) {
-//       await loginWithRedirect({ appState: { targetUrl: to.fullPath } });
-//       return false;
-//     }
-//   }
-// });
 
 export default router;
