@@ -5,10 +5,6 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/apply',
-    },
-    {
-      path: '/apply',
       name: 'Apply',
       component: () => import('@/views/Apply.vue'),
       meta: {
@@ -17,7 +13,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/apply/thank-you',
+      path: '/thank-you',
       name: 'ApplyThankYou',
       component: () => import('@/views/ApplyThankYou.vue'),
       meta: {

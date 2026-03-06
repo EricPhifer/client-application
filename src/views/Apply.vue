@@ -77,7 +77,7 @@ async function submitApplication() {
     }
 
     // Redirect to thank you page
-    router.push('/apply/thank-you');
+    router.push('/thank-you');
   } catch (error) {
     console.error('Submission error:', error);
     submitError.value = error instanceof Error
@@ -221,7 +221,7 @@ async function submitApplication() {
               id="org-type"
               v-model="formData.organizationType"
               required
-              class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
+              class="w-full border border-border rounded-lg px-4 py-3.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
             >
               <option value="">Select organization type</option>
               <option value="church">Church</option>
@@ -255,7 +255,7 @@ async function submitApplication() {
               id="situation"
               v-model="formData.situation"
               required
-              class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
+              class="w-full border border-border rounded-lg px-4 py-3.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
             >
               <option value="">Select your situation</option>
               <option value="new-website">We need a new website (don't have one)</option>
@@ -299,7 +299,7 @@ async function submitApplication() {
               id="budget"
               v-model="formData.budgetRange"
               required
-              class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
+              class="w-full border border-border rounded-lg px-4 py-3.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
             >
               <option value="">Select budget range</option>
               <option value="under-2000">Under $2,000</option>
@@ -319,7 +319,7 @@ async function submitApplication() {
               id="timeline"
               v-model="formData.timeline"
               required
-              class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
+              class="w-full border border-border rounded-lg px-4 py-3.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
             >
               <option value="">Select timeline</option>
               <option value="asap">ASAP (within 2-4 weeks)</option>
@@ -395,8 +395,11 @@ async function submitApplication() {
               required
               rows="4"
               class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text placeholder:text-text-muted focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
-              placeholder="Tell us how you serve your community (2-3 sentences)"
+              placeholder="e.g., We provide after-school tutoring to kids in under-resourced neighborhoods. Families in our program see measurable improvements in grades and confidence."
             ></textarea>
+            <p class="text-sm text-text-muted mt-2">
+              No need to be formal. Just tell us who you serve and what changes for them because of your work.
+            </p>
           </div>
 
           <div>
@@ -409,7 +412,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="vulnerable-populations"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">We serve vulnerable populations</span>
               </label>
@@ -418,7 +421,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="strengthen-families"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">We strengthen families and relationships</span>
               </label>
@@ -427,7 +430,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="education"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">We provide education or resources</span>
               </label>
@@ -436,7 +439,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="community-connections"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">We build community connections</span>
               </label>
@@ -445,7 +448,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="economic-health"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">We support local economic health</span>
               </label>
@@ -454,7 +457,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="health-wellness"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">We promote health and wellness</span>
               </label>
@@ -463,7 +466,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="spiritual-needs"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">We serve spiritual needs</span>
               </label>
@@ -472,7 +475,7 @@ async function submitApplication() {
                   v-model="formData.impactCategories"
                   type="checkbox"
                   value="other"
-                  class="mt-1 mr-3"
+                  class="styled-checkbox mt-0.5 mr-3"
                 />
                 <span class="text-sm text-text">Other community benefit</span>
               </label>
@@ -496,7 +499,7 @@ async function submitApplication() {
               id="industry"
               v-model="formData.industry"
               required
-              class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
+              class="w-full border border-border rounded-lg px-4 py-3.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
             >
               <option value="">Select industry</option>
               <option value="church">Church/Religious Organization</option>
@@ -528,7 +531,7 @@ async function submitApplication() {
             <select
               id="referral-source"
               v-model="formData.referralSource"
-              class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
+              class="w-full border border-border rounded-lg px-4 py-3.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
             >
               <option value="">Select source</option>
               <option value="google">Google search</option>

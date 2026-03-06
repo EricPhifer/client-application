@@ -1,5 +1,5 @@
-import { createClient } from '@libsql/client';
-import type { Client } from '@libsql/client';
+import { createClient } from '@libsql/client/web';
+import type { Client } from '@libsql/client/web';
 
 let client: Client | null = null;
 

@@ -1,5 +1,5 @@
 import type { Handler } from '@netlify/functions';
-import { createClient } from '@libsql/client';
+import { createClient } from '@libsql/client/web';
 
 const turso = createClient({
   url: process.env.TURSO_DATABASE_URL!,
