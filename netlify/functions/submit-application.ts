@@ -52,7 +52,7 @@ export const handler: Handler = async (event) => {
     // Validate required fields
     const requiredFields = [
       'organizationName', 'contactName', 'contactRole', 'email',
-      'organizationType', 'situation', 'projectDescription',
+      'situation', 'projectDescription',
       'budgetRange', 'timeline', 'missionStatement', 'communityImpact',
       'industry',
     ] as const;
@@ -152,7 +152,7 @@ function performAutoAssessment(formData: ApplicationData): AutoAssessment {
 
   // Mission-driven organization check
   const missionDriven = ['church', 'nonprofit', 'author'].includes(
-    formData.organizationType.toLowerCase()
+    formData.industry.toLowerCase()
   );
   if (missionDriven) {
     greenFlags.push('Mission-driven organization');
@@ -197,12 +197,10 @@ function performAutoAssessment(formData: ApplicationData): AutoAssessment {
   ];
 
   const industryLower = formData.industry.toLowerCase();
-  const orgTypeLower = formData.organizationType.toLowerCase();
   const descriptionLower = formData.projectDescription.toLowerCase();
 
   const hasEthicalConcern = redFlagIndustries.some(flag =>
     industryLower.includes(flag) ||
-    orgTypeLower.includes(flag) ||
     descriptionLower.includes(flag)
   );
 

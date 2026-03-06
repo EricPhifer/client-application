@@ -57,6 +57,13 @@ onMounted(async () => {
   }
 });
 
+function normalizeUrl() {
+  const url = formData.websiteUrl.trim();
+  if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+    formData.websiteUrl = `https://${url}`;
+  }
+}
+
 async function submitApplication() {
   isSubmitting.value = true;
   submitError.value = '';
@@ -198,9 +205,11 @@ async function submitApplication() {
             <input
               id="website-url"
               v-model="formData.websiteUrl"
-              type="url"
+              type="text"
+              inputmode="url"
+              @blur="normalizeUrl"
               class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text placeholder:text-text-muted focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
-              placeholder="https://yourwebsite.com (leave blank if you don't have one)"
+              placeholder="yourwebsite.com (leave blank if you don't have one)"
             />
           </div>
         </div>
@@ -213,40 +222,6 @@ async function submitApplication() {
         </div>
 
         <div class="space-y-4 md:space-y-6">
-          <div>
-            <label for="org-type" class="block text-sm font-medium text-text-secondary mb-2">
-              What type of organization are you? <span class="text-error">*</span>
-            </label>
-            <select
-              id="org-type"
-              v-model="formData.organizationType"
-              required
-              class="w-full border border-border rounded-lg px-4 py-3.5 bg-bg text-text focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
-            >
-              <option value="">Select organization type</option>
-              <option value="church">Church</option>
-              <option value="nonprofit">Nonprofit</option>
-              <option value="local-business">Local Business</option>
-              <option value="hoa">HOA</option>
-              <option value="author">Author/Speaker</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          <div v-if="formData.organizationType === 'other'">
-            <label for="other-org-type" class="block text-sm font-medium text-text-secondary mb-2">
-              Please specify <span class="text-error">*</span>
-            </label>
-            <input
-              id="other-org-type"
-              v-model="formData.otherOrgType"
-              type="text"
-              :required="formData.organizationType === 'other'"
-              class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text placeholder:text-text-muted focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
-              placeholder="Describe your organization type"
-            />
-          </div>
-
           <div>
             <label for="situation" class="block text-sm font-medium text-text-secondary mb-2">
               What best describes your situation? <span class="text-error">*</span>
@@ -504,6 +479,8 @@ async function submitApplication() {
               <option value="">Select industry</option>
               <option value="church">Church/Religious Organization</option>
               <option value="nonprofit">Nonprofit/Charity</option>
+              <option value="author">Author/Speaker</option>
+              <option value="hoa">HOA/Community Association</option>
               <option value="healthcare">Healthcare</option>
               <option value="professional-services">Professional Services</option>
               <option value="retail">Retail</option>
