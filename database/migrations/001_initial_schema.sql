@@ -217,6 +217,8 @@ CREATE INDEX IF NOT EXISTS idx_clients_prospect ON clients(prospect_id);
 
 -- ============================================
 -- PROJECTS (Client Work)
+-- Reserved for future multi-project client tracking.
+-- Not currently written to by any Netlify function. Pending implementation.
 -- ============================================
 CREATE TABLE IF NOT EXISTS projects (
   id TEXT PRIMARY KEY,

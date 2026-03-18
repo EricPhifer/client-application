@@ -1,6 +1,7 @@
 import type { Handler } from '@netlify/functions';
 import { createClient } from '@libsql/client/web';
 import { nanoid } from 'nanoid';
+import { addAweberTags } from './utils/aweber-tags';
 
 const turso = createClient({
   url: process.env.TURSO_DATABASE_URL!,
@@ -122,6 +123,13 @@ export const handler: Handler = async (event) => {
               WHERE id = ?`,
         args: [applicationId, now, formData.prospectId],
       });
+    }
+
+    // Tag in AWeber — adds application-submitted, removes lead-captured
+    try {
+      await addAweberTags(formData.email, ['application-submitted'], formData.contactName)
+    } catch (aweberErr) {
+      console.error('[Submit Application] Failed to update AWeber tags (continuing):', aweberErr)
     }
 
     return {

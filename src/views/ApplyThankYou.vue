@@ -18,7 +18,7 @@
       <ol class="space-y-2 text-sm md:text-base text-text-secondary">
         <li class="flex items-start">
           <span class="font-semibold text-secondary mr-2">1.</span>
-          <span>Check your email for confirmation (should arrive within a few minutes)</span>
+          <span>Your application has been received — no further action needed</span>
         </li>
         <li class="flex items-start">
           <span class="font-semibold text-secondary mr-2">2.</span>
@@ -37,13 +37,13 @@
     </p>
 
     <a
-      href="/"
+      href="https://phiferwebsolutions.com"
       class="inline-flex items-center text-primary hover:text-secondary font-medium transition-colors"
     >
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      Explore Our Work
+      <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
       </svg>
-      Back to Home
     </a>
   </div>
 </template>
