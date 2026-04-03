@@ -125,11 +125,52 @@ export const handler: Handler = async (event) => {
       });
     }
 
+    // Update existing client record if email matches (e.g. from health check)
+    try {
+      const existingClient = await turso.execute({
+        sql: 'SELECT id FROM clients WHERE LOWER(email) = LOWER(?)',
+        args: [formData.email],
+      })
+      if (existingClient.rows.length > 0) {
+        await turso.execute({
+          sql: `UPDATE clients
+                SET project_status = 'application',
+                    client_category = 'application',
+                    updated_at = datetime('now')
+                WHERE id = ?`,
+          args: [existingClient.rows[0].id],
+        })
+        console.log(`[Submit Application] Updated existing client ${existingClient.rows[0].id} to application status`)
+      }
+    } catch (clientErr) {
+      console.error('[Submit Application] Failed to update client status (continuing):', clientErr)
+    }
+
     // Tag in AWeber — adds application-submitted, removes lead-captured
     try {
       await addAweberTags(formData.email, ['application-submitted'], formData.contactName)
     } catch (aweberErr) {
       console.error('[Submit Application] Failed to update AWeber tags (continuing):', aweberErr)
+    }
+
+    // Notify Client Dashboard for push notifications
+    try {
+      const webhookSecret = process.env.APPLICATION_WEBHOOK_SECRET
+      if (webhookSecret) {
+        await fetch('https://isyourwebsitegood.com/.netlify/functions/receive-application-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Webhook-Secret': webhookSecret,
+          },
+          body: JSON.stringify({
+            organizationName: formData.organizationName,
+            contactName: formData.contactName,
+          }),
+        })
+      }
+    } catch (notifyErr) {
+      console.error('[Submit Application] Failed to send dashboard notification (continuing):', notifyErr)
     }
 
     return {
