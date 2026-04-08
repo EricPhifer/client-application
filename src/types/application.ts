@@ -100,4 +100,6 @@ export interface ApplicationFormData {
   industry: string;
   referralSource: string;
   referralDetail: string;
+  pwsConfirm?: string;        // honeypot — should always be empty
+  formLoadedAt?: number;      // Unix ms timestamp of when the form loaded
 }

@@ -72,6 +72,15 @@ body {
   transition: color 0.2s ease, background-color 0.2s ease;
 }
 
+/* Bot trap honeypot — visually hidden, off-screen */
+.pws-confirm {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* Custom form element styling for brand consistency */
 input[type="radio"] {
   accent-color: var(--color-secondary);

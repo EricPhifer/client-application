@@ -30,6 +30,107 @@ interface ApplicationData {
   industry: string;
   referralSource?: string;
   referralDetail?: string;
+  pws_confirm?: string;
+  form_loaded_at?: number;
+}
+
+// ============================================
+// Bot/Spam Detection Utilities
+// ============================================
+
+/**
+ * Calculate Shannon entropy (bits per character) for a string.
+ * High-entropy strings (random/garbled) score above 3.5 bits/char.
+ */
+function shannonEntropy(str: string): number {
+  if (!str.length) return 0;
+  const freq: Record<string, number> = {};
+  for (const ch of str) {
+    freq[ch] = (freq[ch] || 0) + 1;
+  }
+  let entropy = 0;
+  for (const ch in freq) {
+    const p = freq[ch] / str.length;
+    entropy -= p * Math.log2(p);
+  }
+  return entropy;
+}
+
+/**
+ * A string is high-entropy bot input when ALL of:
+ * - length > 10
+ * - contains no spaces
+ * - Shannon entropy > 3.5 bits/char
+ */
+function isHighEntropy(str: string): boolean {
+  if (!str || str.length <= 10) return false;
+  if (str.includes(' ')) return false;
+  return shannonEntropy(str) > 3.5;
+}
+
+/**
+ * Detect suspicious email local parts (the bit before @).
+ * Targets common throwaway/burner patterns.
+ */
+function isSuspiciousEmail(email: string): boolean {
+  if (!email || !email.includes('@')) return false;
+  const localPart = email.split('@')[0];
+
+  // Length > 40 characters
+  if (localPart.length > 40) return true;
+
+  // 4+ consecutive digits anywhere
+  if (/\d{4,}/.test(localPart)) return true;
+
+  // 3+ dots in local part
+  if ((localPart.match(/\./g) || []).length >= 3) return true;
+
+  // Ends with .digit (e.g., .69)
+  if (/\.\d+$/.test(localPart)) return true;
+
+  return false;
+}
+
+/**
+ * Run all spam signals. Returns the first reason that trips, or null.
+ */
+function spamCheck(data: ApplicationData): { isSpam: boolean; reason: string } {
+  // 1. Honeypot — must be empty
+  if (data.pws_confirm && data.pws_confirm.trim().length > 0) {
+    return { isSpam: true, reason: 'honeypot_filled' };
+  }
+
+  // 2. Submission timing — must be at least 8 seconds after form load
+  if (!data.form_loaded_at || typeof data.form_loaded_at !== 'number') {
+    return { isSpam: true, reason: 'missing_form_loaded_at' };
+  }
+  const elapsed = Date.now() - data.form_loaded_at;
+  if (elapsed < 8000) {
+    return { isSpam: true, reason: `submitted_too_fast_${elapsed}ms` };
+  }
+
+  // 3. Input entropy — count high-entropy text fields
+  const entropyFields: Array<[string, string]> = [
+    ['organization_name', data.organizationName || ''],
+    ['contact_name', data.contactName || ''],
+    ['project_description', data.projectDescription || ''],
+    ['mission_statement', data.missionStatement || ''],
+    ['community_impact', data.communityImpact || ''],
+  ];
+  const failed = entropyFields.filter(([, value]) => isHighEntropy(value));
+  if (failed.length >= 2) {
+    return {
+      isSpam: true,
+      reason: `high_entropy_fields:${failed.map(([name]) => name).join(',')}`,
+    };
+  }
+
+  // 4. Email pattern check
+  if (isSuspiciousEmail(data.email || '')) {
+    return { isSpam: true, reason: 'suspicious_email_pattern' };
+  }
+
+  return { isSpam: false, reason: '' };
 }
 
 interface AutoAssessment {
@@ -49,6 +150,25 @@ export const handler: Handler = async (event) => {
     const formData: ApplicationData = JSON.parse(event.body || '{}');
     const applicationId = nanoid();
     const now = Date.now();
+
+    // Bot/spam screening — runs before validation.
+    // On spam detection, return a normal-looking success response and silently
+    // drop the submission. Never write to DB, never call AWeber.
+    const spam = spamCheck(formData);
+    if (spam.isSpam) {
+      console.log(
+        `[SPAM_BLOCKED] reason=${spam.reason} email=${formData.email || 'none'} ip=${event.headers['x-forwarded-for'] || 'unknown'}`
+      );
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: true,
+          applicationId: nanoid(),
+          hasHealthCheckCredit: false,
+        }),
+      };
+    }
 
     // Validate required fields
     const requiredFields = [

@@ -32,7 +32,11 @@ const formData = reactive<ApplicationFormData>({
   industry: '',
   referralSource: '',
   referralDetail: '',
+  pwsConfirm: '',
 });
+
+// Bot prevention: record when form was loaded
+const formLoadedAt = Date.now();
 
 // Pre-fill form from prospect data
 onMounted(async () => {
@@ -75,6 +79,8 @@ async function submitApplication() {
       body: JSON.stringify({
         ...formData,
         prospectId: prospectId.value,
+        pws_confirm: formData.pwsConfirm,
+        form_loaded_at: formLoadedAt,
       }),
     });
 
@@ -195,6 +201,19 @@ async function submitApplication() {
               type="tel"
               class="w-full border border-border rounded-lg px-4 py-2.5 bg-bg text-text placeholder:text-text-muted focus:ring-2 focus:ring-border-focus focus:border-transparent transition-shadow"
               placeholder="(555) 555-5555"
+            />
+          </div>
+
+          <!-- Bot trap — CSS hidden, never visible to real users -->
+          <div class="pws-confirm" aria-hidden="true" tabindex="-1">
+            <label for="pws_confirm">Leave this blank</label>
+            <input
+              id="pws_confirm"
+              v-model="formData.pwsConfirm"
+              type="text"
+              name="pws_confirm"
+              autocomplete="off"
+              tabindex="-1"
             />
           </div>
 
