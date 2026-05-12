@@ -286,6 +286,8 @@ export const handler: Handler = async (event) => {
           body: JSON.stringify({
             organizationName: formData.organizationName,
             contactName: formData.contactName,
+            email: formData.email,
+            applicationId,
           }),
         })
       }
