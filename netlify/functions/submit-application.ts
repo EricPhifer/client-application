@@ -19,6 +19,7 @@ interface ApplicationData {
   organizationType: string;
   otherOrgType?: string;
   situation: string;
+  sitePurpose: string;
   projectDescription: string;
   budgetRange: string;
   timeline: string;
@@ -139,6 +140,7 @@ interface AutoAssessment {
   redFlags: string[];
   recommendation: 'ACCEPT_RECOMMENDED' | 'REVIEW_NEEDED' | 'DECLINE_RECOMMENDED';
   score: number;
+  site_function: 'active_tool' | 'credential' | 'unknown';
 }
 
 export const handler: Handler = async (event) => {
@@ -173,7 +175,7 @@ export const handler: Handler = async (event) => {
     // Validate required fields
     const requiredFields = [
       'organizationName', 'contactName', 'contactRole', 'email',
-      'situation', 'projectDescription',
+      'situation', 'sitePurpose', 'projectDescription',
       'budgetRange', 'timeline', 'missionStatement', 'communityImpact',
       'industry',
     ] as const;
@@ -321,6 +323,24 @@ function performAutoAssessment(formData: ApplicationData): AutoAssessment {
   const yellowFlags: string[] = [];
   const redFlags: string[] = [];
 
+  // Derive site_function from site_purpose
+  const activePurposes = ['search_visibility', 'conversions', 'community_updates'];
+  const site_function: 'active_tool' | 'credential' | 'unknown' =
+    activePurposes.includes(formData.sitePurpose) ? 'active_tool'
+    : formData.sitePurpose === 'credential' ? 'credential'
+    : 'unknown';
+
+  // Active site purpose
+  if (site_function === 'active_tool') {
+    greenFlags.push('Active site purpose (search, conversions, or community updates)');
+  }
+
+  // Credential-only purpose + low budget (double signal for Day Rate fit)
+  const lowBudget = ['under-2000', 'not-sure'].includes(formData.budgetRange);
+  if (site_function === 'credential' && lowBudget) {
+    yellowFlags.push('Credential-only site purpose combined with low/uncertain budget — Day Rate likely the right fit');
+  }
+
   // Mission-driven organization check
   const missionDriven = ['church', 'nonprofit', 'author'].includes(
     formData.industry.toLowerCase()
@@ -394,5 +414,6 @@ function performAutoAssessment(formData: ApplicationData): AutoAssessment {
     redFlags,
     recommendation,
     score: greenFlags.length - yellowFlags.length - (redFlags.length * 2),
+    site_function,
   };
 }

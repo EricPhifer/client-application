@@ -21,6 +21,7 @@ const formData = reactive<ApplicationFormData>({
   organizationType: '',
   otherOrgType: '',
   situation: '',
+  sitePurpose: '',
   projectDescription: '',
   budgetRange: '',
   timeline: '',
@@ -257,6 +258,69 @@ async function submitApplication() {
               <option value="maintenance">We need ongoing website support/maintenance</option>
               <option value="not-sure">We're not sure yet</option>
             </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-text-secondary mb-2">
+              What do you primarily need your website to do? <span class="text-error">*</span>
+            </label>
+            <div class="space-y-3">
+              <label class="flex items-start cursor-pointer">
+                <input
+                  v-model="formData.sitePurpose"
+                  type="radio"
+                  value="search_visibility"
+                  name="site-purpose"
+                  required
+                  class="mt-0.5 mr-3"
+                />
+                <span class="text-sm text-text">Show up in search when people look for us</span>
+              </label>
+              <label class="flex items-start cursor-pointer">
+                <input
+                  v-model="formData.sitePurpose"
+                  type="radio"
+                  value="conversions"
+                  name="site-purpose"
+                  required
+                  class="mt-0.5 mr-3"
+                />
+                <span class="text-sm text-text">Accept donations, sign-ups, or registrations</span>
+              </label>
+              <label class="flex items-start cursor-pointer">
+                <input
+                  v-model="formData.sitePurpose"
+                  type="radio"
+                  value="community_updates"
+                  name="site-purpose"
+                  required
+                  class="mt-0.5 mr-3"
+                />
+                <span class="text-sm text-text">Keep our community informed with current events</span>
+              </label>
+              <label class="flex items-start cursor-pointer">
+                <input
+                  v-model="formData.sitePurpose"
+                  type="radio"
+                  value="credential"
+                  name="site-purpose"
+                  required
+                  class="mt-0.5 mr-3"
+                />
+                <span class="text-sm text-text">Establish our online presence and provide basic info</span>
+              </label>
+              <label class="flex items-start cursor-pointer">
+                <input
+                  v-model="formData.sitePurpose"
+                  type="radio"
+                  value="other"
+                  name="site-purpose"
+                  required
+                  class="mt-0.5 mr-3"
+                />
+                <span class="text-sm text-text">Something else</span>
+              </label>
+            </div>
           </div>
 
           <div>

@@ -56,6 +56,7 @@ export interface AutoAssessment {
   redFlags: string[];
   recommendation: 'ACCEPT_RECOMMENDED' | 'REVIEW_NEEDED' | 'DECLINE_RECOMMENDED';
   score: number;
+  site_function: 'active_tool' | 'credential' | 'unknown';
 }
 
 export interface Client {
@@ -89,6 +90,7 @@ export interface ApplicationFormData {
   organizationType: string;
   otherOrgType: string;
   situation: string;
+  sitePurpose: 'search_visibility' | 'conversions' | 'community_updates' | 'credential' | 'other' | '';
   projectDescription: string;
   budgetRange: string;
   timeline: string;
