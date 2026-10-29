@@ -262,8 +262,11 @@ async function submitApplication() {
 
           <div>
             <label class="block text-sm font-medium text-text-secondary mb-2">
-              What do you primarily need your website to do? <span class="text-error">*</span>
+              What's the single most important thing your website needs to do? <span class="text-error">*</span>
             </label>
+            <p class="text-xs text-text-muted mb-3">
+              Pick the one outcome your website should deliver first. This becomes the primary action on your site — everything else is secondary. You'll have room for other goals during discovery.
+            </p>
             <div class="space-y-3">
               <label class="flex items-start cursor-pointer">
                 <input

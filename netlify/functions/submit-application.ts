@@ -278,8 +278,10 @@ export const handler: Handler = async (event) => {
     // Notify Client Dashboard for push notifications
     try {
       const webhookSecret = process.env.APPLICATION_WEBHOOK_SECRET
-      if (webhookSecret) {
-        await fetch('https://isyourwebsitegood.com/.netlify/functions/receive-application-notification', {
+      if (!webhookSecret) {
+        console.error('[Submit Application] APPLICATION_WEBHOOK_SECRET is not set; skipping dashboard notification for', applicationId)
+      } else {
+        const notifyRes = await fetch('https://isyourwebsitegood.com/.netlify/functions/receive-application-notification', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -291,7 +293,14 @@ export const handler: Handler = async (event) => {
             email: formData.email,
             applicationId,
           }),
+          signal: AbortSignal.timeout(8000),
         })
+        if (!notifyRes.ok) {
+          const body = await notifyRes.text().catch(() => '')
+          console.error(`[Submit Application] Dashboard notification failed: ${notifyRes.status} ${body}`)
+        } else {
+          console.log(`[Submit Application] Dashboard notification sent for ${applicationId}`)
+        }
       }
     } catch (notifyErr) {
       console.error('[Submit Application] Failed to send dashboard notification (continuing):', notifyErr)
