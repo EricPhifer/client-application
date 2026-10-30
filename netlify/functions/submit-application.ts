@@ -358,9 +358,16 @@ function performAutoAssessment(formData: ApplicationData): AutoAssessment {
     greenFlags.push('Mission-driven organization');
   }
 
-  // Budget check
+  // Budget check — under $2K routes by fit: credential → Day Rate (flagged above),
+  // mission-driven → Starter Bundle, everything else stays yellow
   if (formData.budgetRange === 'under-2000') {
-    yellowFlags.push('Budget under $2,000');
+    if (site_function === 'credential') {
+      yellowFlags.push('Budget under $2,000');
+    } else if (missionDriven) {
+      greenFlags.push('Starter Bundle fit ($1,800 + $200/mo, 12-month upgrade commitment)');
+    } else {
+      yellowFlags.push('Budget under $2,000 — likely decline, or Starter if a long-term relationship signal is present');
+    }
   } else if (['2000-5000', '5000-10000', '10000+', 'monthly'].includes(formData.budgetRange)) {
     greenFlags.push('Adequate budget');
   } else if (formData.budgetRange === 'not-sure') {
